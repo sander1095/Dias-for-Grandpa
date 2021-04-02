@@ -31,6 +31,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="L, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\L.5.0.0\lib\netstandard2.0\L.dll</HintPath>
+    </Reference>
+    <Reference Include="Mecha.Core, Version=1.0.7141.4286, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MechaView.MahApps.0.0.152\lib\net45\Mecha.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Mecha.Wpf.Settings, Version=1.0.7141.4287, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MechaView.MahApps.0.0.152\lib\net45\Mecha.Wpf.Settings.dll</HintPath>
+    </Reference>
+    <Reference Include="Syroot.KnownFolders, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syroot.Windows.IO.KnownFolders.1.2.1\lib\net452\Syroot.KnownFolders.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -41,8 +53,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="App.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\OrganizerViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="app.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
