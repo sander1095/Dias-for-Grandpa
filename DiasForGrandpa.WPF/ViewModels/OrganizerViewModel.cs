@@ -55,7 +55,6 @@ namespace DiasForGrandpa.WPF.ViewModels
                 // We move the Dias to the Pictures -> Dias Folder
                 // so the volume is empty again for more dia scanning goodness!
                 ImportDias();
-
             }
             catch (Exception e) when (!(e is ErrorDialogException))
             {
@@ -122,6 +121,23 @@ namespace DiasForGrandpa.WPF.ViewModels
             {
                 foreach (var dia in diasToImport)
                 {
+                    // TODO: Figure out what to do if file exists
+                    // If he scans a new batch with some forgotten pics of a year he has already processed
+                    // the name of the file will be PIC001 again for example.
+                    // Even tho PIC001 already exists, it can be a completely different picture.
+                    // Perhaps we can check some metadata? We don't want to overwrite the existing file, cuz we wanna add to that year!
+                    // But we also dont want the names of the file to be random in case he does get a duplicate; we dont wanna save those.
+                    // Checking duplicates might be difficult though because the device scans the dia's; it will never be the same image.
+
+                    if (_fileManager.FileExists(Path.Combine(DiaFolderOutputPath, dia.Name)))
+                    {
+                        // If the file exists, do not overwrite it. Just continue.
+                        // He could have deleted scanned a new batch and entered the old name
+                        // TODO: READ THE TODO ABOVE. THIS MEANS THAT THE FILES IN THE END WONT BE REMOVED, TAKING UP DATA.
+                        // IT PROBABLY WONT EVER BE TRUE PROBLEM BUT WE NEED TO FIX IT NONE THE LESS!
+                        continue;
+                    }
+
                     _fileManager.Move(
                         srcFileName: dia.FullName,
                         destFileName: Path.Combine(DiaFolderOutputPath, dia.Name));
