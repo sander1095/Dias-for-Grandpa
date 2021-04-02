@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ChinhDo.Transactions.FileManager, Version=1.4.0.36, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TxFileManager.1.4.0\lib\netstandard2.0\ChinhDo.Transactions.FileManager.dll</HintPath>
+    </Reference>
     <Reference Include="L, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\L.5.0.0\lib\netstandard2.0\L.dll</HintPath>
     </Reference>
@@ -45,6 +48,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
