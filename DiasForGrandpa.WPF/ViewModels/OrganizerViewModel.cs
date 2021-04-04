@@ -50,6 +50,7 @@ namespace DiasForGrandpa.WPF.ViewModels
             {
                 App.Logger.Error(e);
 
+                // We don't include inner exception because the resulting pop-up will then not show the text of the actual exception.
                 throw new ApplicationException(
                     $"Er is iets fout gegaan! {Environment.NewLine}" +
                     $"Stuur een berichtje naar uw kleinzoon of {Environment.NewLine}" +
