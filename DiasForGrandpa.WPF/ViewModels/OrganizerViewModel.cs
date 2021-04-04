@@ -53,7 +53,7 @@ namespace DiasForGrandpa.WPF.ViewModels
                 throw new ApplicationException(
                     $"Er is iets fout gegaan! {Environment.NewLine}" +
                     $"Stuur een berichtje naar uw kleinzoon of {Environment.NewLine}" +
-                    $"nodig uw kleinzoon uit voor rijstepap en hij zal het oplossen!");
+                    $"nodig uw kleinzoon uit voor rijstepap en hij zal het oplossen!", e);
             }
         }
 
