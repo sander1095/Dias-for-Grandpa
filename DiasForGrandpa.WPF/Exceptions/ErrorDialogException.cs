@@ -6,7 +6,7 @@ namespace DiasForGrandpa.WPF.Exceptions
     /// Used to show error dialogs and to avoid that a global exception handler 
     /// would swallow the exception and thus not display the error dialog
     /// </summary>
-    public class ErrorDialogException : Exception
+    public class ErrorDialogException : ApplicationException
     {
         public ErrorDialogException()
         {

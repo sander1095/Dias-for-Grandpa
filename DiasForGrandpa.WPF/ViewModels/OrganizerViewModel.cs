@@ -2,7 +2,6 @@
 using DiasForGrandpa.WPF.Exceptions;
 using DiasForGrandpa.WPF.Helpers;
 using Mecha.ViewModel.Attributes;
-using Syroot.Windows.IO;
 using System;
 using System.IO;
 using System.Linq;
@@ -12,21 +11,12 @@ namespace DiasForGrandpa.WPF.ViewModels
 {
     public class OrganizerViewModel
     {
-        // TODO: Change DiaVolumePath and DiaFolderPath to the correct one. (G:\)
-        private const string _diaVolumePath = "D:\\";
-        private const string _diaVolumeName = "DIA";
-
-        /// <summary>
-        /// The Dia scanner stores the file on this path
-        /// </summary>
-        private string DiaFolderInputPath => Path.Combine(_diaVolumePath, "DCIM", "100COACH");
+        private readonly TxFileManager _fileManager = new TxFileManager();
 
         /// <summary>
         /// We move the dia's from the dia volume to this folder.
         /// </summary>
-        private string DiaFolderOutputPath => Path.Combine(KnownFolders.Pictures.Path, "Dia's", FolderName);
-
-        private readonly TxFileManager _fileManager = new TxFileManager();
+        private string DiaFolderOutputPath => Path.Combine(App.Settings.DiaFolderBaseOutputPath, FolderName);
 
         [Readonly]
         public virtual string Intro =>
@@ -60,7 +50,7 @@ namespace DiasForGrandpa.WPF.ViewModels
             {
                 App.Logger.Error(e);
 
-                throw new Exception(
+                throw new ApplicationException(
                     $"Er is iets fout gegaan! {Environment.NewLine}" +
                     $"Stuur een berichtje naar uw kleinzoon of {Environment.NewLine}" +
                     $"nodig uw kleinzoon uit voor rijstepap en hij zal het oplossen!");
@@ -74,23 +64,22 @@ namespace DiasForGrandpa.WPF.ViewModels
             // so he does not mix up SD card's. 
             // He wouldn't be happy if he accidentally used a different SD Card and 
             // our code would bug out and accidently delete important files....
-            if (!Directory.Exists(_diaVolumePath) || !DriveInfo.GetDrives().Any(x => x.VolumeLabel == _diaVolumeName))
+
+            if (!Directory.Exists(App.Settings.DiaFolderInputPath) ||
+                !DriveInfo.GetDrives().Any(x => x.VolumeLabel == App.Settings.DiaVolumeName) ||
+                Directory.GetFiles(App.Settings.DiaFolderInputPath).Length == 0)
             {
                 ErrorDialog.ShowError(
-                    $"De SD kaart kan niet gevonden worden. Zit de SD kaart in de computer?{Environment.NewLine}" +
+                    $"De {App.Settings.DiaVolumeName} SD kaart kan niet gevonden worden of er staan geen ingescande Dia's op. " +
+                    $"Controleer dat je de juiste SD kaart in de computer hebt zitten en dat je dia's hebt gescand." +
                     $"{Environment.NewLine}" +
                     $"Neem contact op met je kleinzoon als de DIA SD kaart er wél goed in zit!");
-
-            }
-            else if (!Directory.Exists(DiaFolderInputPath) || Directory.GetFiles(DiaFolderInputPath).Length == 0)
-            {
-                ErrorDialog.ShowError("De SD kaart bevat geen Dia's. Scan eerst wat Dia's in en probeer het opnieuw.");
             }
 
             try
             {
                 // https://stackoverflow.com/a/3137165/3013479
-                _ = Path.GetFullPath(DiaFolderInputPath);
+                _ = Path.GetFullPath(App.Settings.DiaFolderInputPath);
 
                 if (FolderName.Contains("/") || FolderName.Contains("\\"))
                 {
@@ -105,7 +94,7 @@ namespace DiasForGrandpa.WPF.ViewModels
 
         private void ImportDias()
         {
-            var inputDirectory = new DirectoryInfo(DiaFolderInputPath);
+            var inputDirectory = new DirectoryInfo(App.Settings.DiaFolderInputPath);
             var diasToImport = inputDirectory.GetFiles("*.jpg");
 
             var outputDirectory = new DirectoryInfo(DiaFolderOutputPath);
