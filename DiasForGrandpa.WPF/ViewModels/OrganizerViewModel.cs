@@ -106,11 +106,15 @@ namespace DiasForGrandpa.WPF.ViewModels
         private void ImportDias()
         {
             var inputDirectory = new DirectoryInfo(DiaFolderInputPath);
-
-            // Already create the output directory.
-            _ = Directory.CreateDirectory(DiaFolderOutputPath);
-
             var diasToImport = inputDirectory.GetFiles("*.jpg");
+
+            var outputDirectory = new DirectoryInfo(DiaFolderOutputPath);
+            outputDirectory.Create();
+
+            // Make the filenames an incrementing integer.
+            // This makes it easy to just add some pictures he found later on to a year that he already scanned in.
+            var amountOfExistingDias = outputDirectory.GetFiles().Length;
+            var fileNameNumber = amountOfExistingDias + 1;
 
             // Create a transaction scope for moving all the files at once.
             // The process succeeds when they are all moved successfully
@@ -119,28 +123,15 @@ namespace DiasForGrandpa.WPF.ViewModels
             // If even one fails, he should just contact me so I can fix it for him.
             using (var scope = new TransactionScope())
             {
-                foreach (var dia in diasToImport)
+                for (var i = 0; i < diasToImport.Length; i++, fileNameNumber++)
                 {
-                    // TODO: Figure out what to do if file exists
-                    // If he scans a new batch with some forgotten pics of a year he has already processed
-                    // the name of the file will be PIC001 again for example.
-                    // Even tho PIC001 already exists, it can be a completely different picture.
-                    // Perhaps we can check some metadata? We don't want to overwrite the existing file, cuz we wanna add to that year!
-                    // But we also dont want the names of the file to be random in case he does get a duplicate; we dont wanna save those.
-                    // Checking duplicates might be difficult though because the device scans the dia's; it will never be the same image.
-
-                    if (_fileManager.FileExists(Path.Combine(DiaFolderOutputPath, dia.Name)))
-                    {
-                        // If the file exists, do not overwrite it. Just continue.
-                        // He could have deleted scanned a new batch and entered the old name
-                        // TODO: READ THE TODO ABOVE. THIS MEANS THAT THE FILES IN THE END WONT BE REMOVED, TAKING UP DATA.
-                        // IT PROBABLY WONT EVER BE TRUE PROBLEM BUT WE NEED TO FIX IT NONE THE LESS!
-                        continue;
-                    }
+                    var dia = diasToImport[i];
+                    var expectedFileName = $"{fileNameNumber}{dia.Extension}";
+                    var outputPath = Path.Combine(DiaFolderOutputPath, expectedFileName);
 
                     _fileManager.Move(
                         srcFileName: dia.FullName,
-                        destFileName: Path.Combine(DiaFolderOutputPath, dia.Name));
+                        destFileName: outputPath);
                 }
 
                 scope.Complete();
