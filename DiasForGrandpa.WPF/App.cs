@@ -38,6 +38,7 @@ public class App : IApp
         catch (Exception e) when (!(e is ApplicationException))
         {
             // If the application can't start, show a pop-up so the user knows what is going on.
+            // We don't catch ApplicationException because they are caused in the viewmodel which shows its own pop-ups.
             MessageBox.Show("De applicatie kon niet gestart worden. Neem contact op met je kleinzoon!", "Error");
 
             Logger.Error(e);
