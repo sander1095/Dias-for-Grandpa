@@ -6,6 +6,7 @@ using SettingManagement;
 using Syroot.Windows.IO;
 using System;
 using System.IO;
+using System.Windows;
 
 public class App : IApp
 {
@@ -36,6 +37,9 @@ public class App : IApp
         }
         catch (Exception e) when (!(e is ApplicationException))
         {
+            // If the application can't start, show a pop-up so the user knows what is going on.
+            MessageBox.Show("De applicatie kon niet gestart worden. Neem contact op met je kleinzoon!", "Error");
+
             Logger.Error(e);
             throw;
         }
