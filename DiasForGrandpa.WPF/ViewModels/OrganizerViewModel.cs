@@ -67,7 +67,7 @@ namespace DiasForGrandpa.WPF.ViewModels
             // our code would bug out and accidently delete important files....
 
             if (!Directory.Exists(App.Settings.DiaFolderInputPath) ||
-                !DriveInfo.GetDrives().Any(x => x.VolumeLabel == App.Settings.DiaVolumeName) ||
+                !DriveInfo.GetDrives().Where(x => x.IsReady).Any(x => x.VolumeLabel == App.Settings.DiaVolumeName) ||
                 Directory.GetFiles(App.Settings.DiaFolderInputPath).Length == 0)
             {
                 ErrorDialog.ShowError(
